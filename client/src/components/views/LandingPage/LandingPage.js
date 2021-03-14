@@ -1,7 +1,6 @@
 import React, { useEffect,useState } from 'react'
 import { Card, Icon, Avatar, Typography, Row, Col } from 'antd';
 import Axios from 'axios';
-
 import moment from 'moment';
 const { Title } = Typography;
 const { Meta } = Card;
