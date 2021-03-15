@@ -3,13 +3,15 @@ import { Avatar, Row, Col, List } from 'antd';
 import Axios from 'axios';
 import SideVideo from './Section/SideVideo';
 import Subscribe from './Section/Subscribe';
+import Comment from './Section/Comment';
 
 function VideoDetailPage(props) {
 
-    const videoId = props.match.params.videoId // App.js videoId url로 넘겨받음
+    const videoId = props.match.params.videoId
     const variable = { videoId: videoId }
 
     const [VideoDetail, setVideoDetail] = useState([])
+    const [Comments, setComments] = useState([])
 
     useEffect(() => {
         
@@ -24,11 +26,27 @@ function VideoDetailPage(props) {
                 }
             })
 
+        Axios.post('/api/comment/getComments', variable)
+            .then(response => {
+                if(response.data.success){
+                    console.log(response.data.comments)
+                    setComments(response.data.comments)
+                }else {
+                    alert('코멘트 정보를 가져오는데 실패했습니다.')
+                }
+            })
+
     }, [])
 
-    if(VideoDetail.writer){
+     
+    const refreshFunction = (newComment) => {
+        setComments(Comments.concat(newComment))
+        
+    }
 
-        const subscribButton = VideoDetail.writer._id !== localStorage.getItem('userId') && <Subscribe userTo={VideoDetail.writer._id} userFrom={localStorage.getItem('userId')}/>
+    if (VideoDetail.writer){
+
+        const subscribeButton = VideoDetail.writer._id !== localStorage.getItem('userId') && <Subscribe userTo={VideoDetail.writer._id} userFrom={localStorage.getItem('userId')}/>
 
         return (
             <Row gutter={[16, 16]} style={{ overflow: 'hidden' }}>
@@ -38,7 +56,7 @@ function VideoDetailPage(props) {
                         <video style={{ width: '100%' }} src={`http://localhost:5000/${VideoDetail.filePath}`} controls />
             
                         <List.Item
-                            actions={[ subscribButton ]}
+                            actions={[ subscribeButton ]}
                         >
                             <List.Item.Meta
                                 avatar={<Avatar src={VideoDetail.writer.image} />}
@@ -49,6 +67,7 @@ function VideoDetailPage(props) {
                         </List.Item>
     
                         {/* Comments */}
+                        <Comment refreshFunction={refreshFunction} commentLists={Comments} postId={VideoDetail._id} writer={localStorage.getItem('userId')}/>
 
                     </div>
 
