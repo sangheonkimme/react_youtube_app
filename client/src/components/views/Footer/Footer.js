@@ -1,15 +1,12 @@
 import React from 'react'
 import {Icon} from 'antd';
+import './Footer.css'
 
 function Footer() {
     return (
-        <div style={{
-            height: '80px', display: 'flex',
-            flexDirection: 'column', alignItems: 'center',
-            justifyContent: 'center', fontSize:'1rem'
-        }}>
+        <footer>
            <p> Copyright By <Icon type="smile" /> Sangheon </p>
-        </div>
+        </footer>
     )
 }
 

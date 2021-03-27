@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Comment, Avatar, Button, Input } from 'antd';
 import Axios from 'axios';
 import { useSelector } from 'react-redux'
+import LikeDislikes from './LikeDislikes';
 
 const { TextArea } = Input;
 
@@ -34,9 +35,10 @@ function SingleComment(props) {
         Axios.post('/api/comment/saveComment', variables)
             .then(response => {
                 if(response.data.success){
-                    console.log(response.data.comment)
-                    props.refreshFunction(response.data.comment)
+                    console.log(response.data)
                     setCommentValue("")
+                    setOpenReply(false)
+                    props.refreshFunction(response.data.comment)
                 }else {
                     alert('코멘트를 저장하는데 실패했습니다.')
                 }
@@ -44,7 +46,8 @@ function SingleComment(props) {
     }
 
     const actions = [
-        <span onClick={onClickReplyOpen} key="comment-basic-reply-to">Reply to</span>
+        <LikeDislikes userId={localStorage.getItem('userId')} commentId={props.comment._id} />
+        ,<span onClick={onClickReplyOpen} key="comment-basic-reply-to">Reply to</span>
     ]
 
     return (
